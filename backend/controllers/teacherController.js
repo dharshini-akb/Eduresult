@@ -47,12 +47,14 @@ const updateMarks = async (req, res) => {
   result.total = result.internalMarks + result.externalMarks;
   result.percentage = (result.total / 100) * 100; // Assuming 100 total
 
-  if (result.percentage >= 90) { result.grade = 'A+'; result.GPA = 10; }
-  else if (result.percentage >= 80) { result.grade = 'A'; result.GPA = 9; }
-  else if (result.percentage >= 70) { result.grade = 'B'; result.GPA = 8; }
-  else if (result.percentage >= 60) { result.grade = 'C'; result.GPA = 7; }
-  else if (result.percentage >= 50) { result.grade = 'D'; result.GPA = 6; }
-  else { result.grade = 'Fail'; result.GPA = 0; }
+  // Grade Logic based on user request: O(10), A+(9), A(8), B+(7), B(6), C(5), F(0)
+  if (result.percentage >= 91) { result.grade = 'O'; result.GPA = 10; }
+  else if (result.percentage >= 81) { result.grade = 'A+'; result.GPA = 9; }
+  else if (result.percentage >= 71) { result.grade = 'A'; result.GPA = 8; }
+  else if (result.percentage >= 61) { result.grade = 'B+'; result.GPA = 7; }
+  else if (result.percentage >= 51) { result.grade = 'B'; result.GPA = 6; }
+  else if (result.percentage === 50) { result.grade = 'C'; result.GPA = 5; }
+  else { result.grade = 'F'; result.GPA = 0; }
 
   result.status = result.percentage >= 50 ? 'Pass' : 'Fail';
 

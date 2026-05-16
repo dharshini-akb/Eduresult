@@ -8,7 +8,7 @@ const SubjectManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSemester, setActiveSemester] = useState('All');
   const [formData, setFormData] = useState({
-    subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science'
+    subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science', credits: 3
   });
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -45,7 +45,7 @@ const SubjectManagement = () => {
     try {
       await axios.post('http://127.0.0.1:5000/api/admin/subjects', formData, config);
       setIsModalOpen(false);
-      setFormData({ subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science' });
+      setFormData({ subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science', credits: 3 });
       fetchSubjects();
     } catch (err) {
       alert(err.response?.data?.message || 'Error saving subject');
@@ -133,7 +133,7 @@ const SubjectManagement = () => {
                         {subject.subjectName}
                       </h4>
                       <p className="text-sm text-slate-400 font-mono mb-4 uppercase tracking-wider">
-                        {subject.subjectCode}
+                        {subject.subjectCode} • {subject.credits} Credits
                       </p>
                       
                       <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-500">
@@ -191,9 +191,13 @@ const SubjectManagement = () => {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-slate-600 ml-1">Department</label>
-                  <input type="text" placeholder="e.g. CS" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} />
+                  <label className="text-sm font-bold text-slate-600 ml-1">Credits</label>
+                  <input type="number" min="1" max="10" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.credits} onChange={(e) => setFormData({...formData, credits: e.target.value})} />
                 </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-600 ml-1">Department</label>
+                <input type="text" placeholder="e.g. CS" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} />
               </div>
               <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition mt-4">
                 Create Subject

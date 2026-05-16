@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Student = require('../models/Student');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -13,6 +14,27 @@ const generateToken = (id) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
+  // If no password provided, it's a student roll number login
+  if (!password) {
+    const student = await Student.findOne({ registerNumber: email }).populate('userId');
+    
+    if (student && student.userId) {
+      const user = student.userId;
+      return res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401);
+      throw new Error('Invalid Roll Number');
+    }
+  }
+
+  // Normal login for staff with email/password
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {

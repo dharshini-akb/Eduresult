@@ -4,6 +4,7 @@ const Teacher = require('../models/Teacher');
 const Subject = require('../models/Subject');
 const Result = require('../models/Result');
 const Announcement = require('../models/Announcement');
+const Notification = require('../models/Notification');
 
 // @desc    Get dashboard statistics
 // @route   GET /api/admin/stats
@@ -222,6 +223,28 @@ const addAnnouncement = async (req, res) => {
   const announcement = await Announcement.create({
     title, message, targetAudience, author: req.user._id
   });
+
+  // Create notifications for target audience
+  let recipients = [];
+  if (targetAudience === 'all') {
+    recipients = await User.find({ role: { $in: ['teacher', 'student', 'head'] }, _id: { $ne: req.user._id } });
+  } else if (targetAudience === 'teachers') {
+    recipients = await User.find({ role: 'teacher' });
+  } else if (targetAudience === 'students') {
+    recipients = await User.find({ role: 'student' });
+  }
+
+  const notifications = recipients.map(user => ({
+    recipient: user._id,
+    title: `New Announcement: ${title}`,
+    message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+    type: 'announcement'
+  }));
+
+  if (notifications.length > 0) {
+    await Notification.insertMany(notifications);
+  }
+
   res.status(201).json(announcement);
 };
 

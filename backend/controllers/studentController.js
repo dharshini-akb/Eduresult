@@ -15,7 +15,7 @@ const getMyResults = async (req, res) => {
   const results = await Result.find({
     studentId: student._id,
     published: true,
-  }).populate('subjectId', 'subjectName subjectCode');
+  }).populate('subjectId', 'subjectName subjectCode credits');
 
   res.json(results);
 };
@@ -34,7 +34,7 @@ const getMyProfile = async (req, res) => {
   }
 };
 
-// @desc    Get subjects for student's current semester
+// @desc    Get subjects for student's department across all semesters
 // @route   GET /api/student/curriculum
 // @access  Private/Student
 const getMyCurriculum = async (req, res) => {
@@ -47,9 +47,8 @@ const getMyCurriculum = async (req, res) => {
 
   const Subject = require('../models/Subject');
   const subjects = await Subject.find({
-    semester: student.semester,
     department: student.department
-  }).sort({ subjectName: 1 });
+  }).sort({ semester: 1, subjectName: 1 });
 
   res.json(subjects);
 };

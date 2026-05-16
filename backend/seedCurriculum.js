@@ -128,7 +128,8 @@ const seedCurriculum = async () => {
             subjectName: sub.name,
             subjectCode: sub.code,
             semester: semData.semester,
-            department: 'Computer Science' // Default department
+            department: 'Computer Science', // Default department
+            credits: Math.floor(Math.random() * 3) + 2 // Random credits between 2-4
           },
           { upsert: true, new: true }
         );
