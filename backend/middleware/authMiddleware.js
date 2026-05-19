@@ -34,8 +34,9 @@ const authorize = (...roles) => {
     if (req.user && roles.includes(req.user.role)) {
       next();
     } else {
+      console.error(`Authorization failed: User role ${req.user?.role} not in authorized roles: ${roles}`);
       res.status(403);
-      throw new Error(`User role ${req.user.role} is not authorized to access this route`);
+      throw new Error(`User role ${req.user?.role} is not authorized to access this route`);
     }
   };
 };

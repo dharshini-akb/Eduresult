@@ -28,30 +28,32 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-700 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] relative overflow-hidden dark:from-[#020617] dark:via-[#020617] dark:to-[#0f172a]">
+      <motion.div className="absolute bottom-8 right-12 text-[160px] opacity-10 select-none pointer-events-none">✨</motion.div>
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass p-8 rounded-2xl shadow-2xl w-full max-w-md"
+        className="relative z-10 w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 sm:p-10 border border-slate-100 dark:border-slate-800"
       >
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
-          <p className="text-gray-600">Join our educational platform today</p>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">Create Account</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 font-medium">Join our educational platform today</p>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+          <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 px-4 py-3 text-sm font-semibold text-red-600 dark:text-red-400">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Full Name"
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/50 backdrop-blur-sm"
+              className="input-field pl-11"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -59,11 +61,11 @@ const Signup = () => {
           </div>
 
           <div className="relative">
-            <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="email"
               placeholder="Email Address"
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/50 backdrop-blur-sm"
+              className="input-field pl-11"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -71,11 +73,11 @@ const Signup = () => {
           </div>
 
           <div className="relative">
-            <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="password"
               placeholder="Password"
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/50 backdrop-blur-sm"
+              className="input-field pl-11"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -83,9 +85,9 @@ const Signup = () => {
           </div>
 
           <div className="relative">
-            <FiUserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiUserCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/50 backdrop-blur-sm appearance-none"
+              className="input-field pl-11 appearance-none cursor-pointer"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               required
@@ -98,16 +100,16 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 hover:bg-blue-700 transition duration-300 shadow-lg mt-4"
+            className="btn-primary w-full py-3.5 mt-2"
           >
             <span>Sign Up</span>
             <FiArrowRight />
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 font-bold hover:underline">
+          <Link to="/login" className="font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4">
             Login here
           </Link>
         </p>

@@ -13,8 +13,8 @@ const SubjectAnalytics = ({ portalType }) => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const { data } = await axios.get('http://127.0.0.1:5000/api/teacher/subjects', config);
-      setSubjects(data);
+      const { data } = await axios.get('/api/teacher/subjects', config);
+      setSubjects(Array.isArray(data) ? data : data.subjects || []);
     };
     fetchSubjects();
   }, []);
@@ -25,7 +25,7 @@ const SubjectAnalytics = ({ portalType }) => {
     if (!subId) return;
 
     const sub = subjects.find(s => s._id === subId);
-    const { data } = await axios.get(`http://127.0.0.1:5000/api/teacher/analytics?subjectId=${subId}&semester=${sub.semester}`, config);
+    const { data } = await axios.get(`/api/teacher/analytics?subjectId=${subId}&semester=${sub.semester}`, config);
     setAnalytics(data);
   };
 

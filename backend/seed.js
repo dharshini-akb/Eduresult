@@ -21,11 +21,11 @@ const connectDB = async () => {
 
 const seedData = async () => {
   try {
-    // Clear existing data
+    // Clear existing data (but keep subjects we seeded earlier)
     await User.deleteMany();
     await Student.deleteMany();
     await Teacher.deleteMany();
-    await Subject.deleteMany();
+    // await Subject.deleteMany(); // Keep the subjects from seedFullCurriculum
     await Result.deleteMany();
 
     // Create Admin
@@ -50,6 +50,19 @@ const seedData = async () => {
       department: 'Computer Science',
     });
 
+    // IT department teacher (mark entry: Information Technology subjects only)
+    const itTeacherUser = await User.create({
+      name: 'IT Faculty',
+      email: 'it.teacher@test.com',
+      password: 'password123',
+      role: 'teacher',
+    });
+    await Teacher.create({
+      userId: itTeacherUser._id,
+      employeeId: 'T-IT-01',
+      department: 'Information Technology',
+    });
+
     // Create Student
     const studentUser = await User.create({
       name: 'Jane Smith',
@@ -60,8 +73,8 @@ const seedData = async () => {
 
     const student = await Student.create({
       userId: studentUser._id,
-      registerNumber: 'S2026001',
-      department: 'Computer Science',
+      registerNumber: '23ITR001',
+      department: 'Information Technology',
       semester: 1,
       section: 'A',
     });
@@ -74,19 +87,21 @@ const seedData = async () => {
       role: 'head',
     });
 
-    // Create Subjects
-    const sub1 = await Subject.create({
+    // Create Subjects (Get from the ones we just seeded or create sample ones)
+    const itSub = await Subject.findOne({ department: 'Information Technology', semester: 1 });
+    const sub1 = itSub || await Subject.create({
       subjectName: 'Mathematics',
       subjectCode: 'MA101',
       semester: 1,
-      department: 'Computer Science',
+      department: 'Information Technology',
     });
 
-    const sub2 = await Subject.create({
+    const itSub2 = await Subject.findOne({ department: 'Information Technology', semester: 1, subjectCode: { $ne: sub1.subjectCode } });
+    const sub2 = itSub2 || await Subject.create({
       subjectName: 'Physics',
       subjectCode: 'PH101',
       semester: 1,
-      department: 'Computer Science',
+      department: 'Information Technology',
     });
 
     // Create Results

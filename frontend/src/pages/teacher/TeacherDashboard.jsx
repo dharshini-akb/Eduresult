@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 // Sub-components
 import MarkEntry from './MarkEntry';
 import SubjectAnalytics from './SubjectAnalytics';
+import Profile from '../Profile';
 
 const TeacherDashboard = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
@@ -16,6 +17,7 @@ const TeacherDashboard = () => {
   const menuItems = [
     { path: '/teacher', label: 'Analytics', icon: <FiTrendingUp /> },
     { path: '/teacher/marks', label: 'Mark Entry', icon: <FiEdit3 /> },
+    { path: '/teacher/profile', label: 'Profile', icon: <FiUser /> },
   ];
 
   if (user.role === 'head' && !selectedPortal) {
@@ -96,7 +98,8 @@ const TeacherDashboard = () => {
     >
       <Routes>
         <Route index element={<SubjectAnalytics portalType={selectedPortal} />} />
-        <Route path="marks" element={<MarkEntry portalType={selectedPortal} />} />
+        <Route path="marks" element={<MarkEntry />} />
+        <Route path="profile" element={<Profile />} />
       </Routes>
     </DashboardLayout>
   );

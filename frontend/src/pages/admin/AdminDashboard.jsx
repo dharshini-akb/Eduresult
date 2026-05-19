@@ -4,7 +4,7 @@ import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import DashboardLayout from '../../components/DashboardLayout';
 import { 
   FiUsers, FiBook, FiPieChart, FiPlus, 
-  FiSearch, FiFilter, FiTrendingUp, FiBell, FiAward
+  FiSearch, FiFilter, FiTrendingUp, FiBell, FiAward, FiUser
 } from 'react-icons/fi';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
@@ -18,6 +18,7 @@ import TeacherManagement from './TeacherManagement';
 import SubjectManagement from './SubjectManagement';
 import ToppersList from './ToppersList';
 import Announcements from './Announcements';
+import Profile from '../Profile';
 
 const menuItems = [
   { path: '/admin', label: 'Overview', icon: <FiPieChart /> },
@@ -26,6 +27,7 @@ const menuItems = [
   { path: '/admin/subjects', label: 'Subjects', icon: <FiBook /> },
   { path: '/admin/toppers', label: 'Toppers', icon: <FiAward /> },
   { path: '/admin/announcements', label: 'Announcements', icon: <FiBell /> },
+  { path: '/admin/profile', label: 'Profile', icon: <FiUser /> },
 ];
 
 const Overview = () => {
@@ -41,7 +43,7 @@ const Overview = () => {
     const fetchStats = async () => {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        const { data } = await axios.get('http://127.0.0.1:5000/api/admin/stats', {
+        const { data } = await axios.get('/api/admin/stats', {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         setStats(data);
@@ -152,6 +154,7 @@ const AdminDashboard = () => {
         <Route path="subjects" element={<SubjectManagement />} />
         <Route path="toppers" element={<ToppersList />} />
         <Route path="announcements" element={<Announcements />} />
+        <Route path="profile" element={<Profile />} />
       </Routes>
     </DashboardLayout>
   );

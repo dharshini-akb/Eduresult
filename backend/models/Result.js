@@ -41,6 +41,11 @@ const resultSchema = mongoose.Schema(
       required: true,
       enum: ['Pass', 'Fail'],
     },
+    internalStatus: {
+      type: String,
+      enum: ['Pass', 'Fail'],
+      default: 'Fail',
+    },
     remarks: {
       type: String,
     },
@@ -57,6 +62,10 @@ const resultSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+resultSchema.index({ studentId: 1, published: 1 });
+resultSchema.index({ studentId: 1, semester: 1 });
+resultSchema.index({ studentId: 1, subjectId: 1, semester: 1 });
 
 const Result = mongoose.model('Result', resultSchema);
 

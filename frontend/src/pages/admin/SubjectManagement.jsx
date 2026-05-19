@@ -7,18 +7,21 @@ const SubjectManagement = () => {
   const [subjects, setSubjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSemester, setActiveSemester] = useState('All');
+  const [selectedDepartment, setSelectedDepartment] = useState('All');
   const [formData, setFormData] = useState({
     subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science', credits: 3
   });
 
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+  const departmentsList = ['Computer Science', 'EEE', 'AIDS', 'ECE', 'Information Technology'];
 
   useEffect(() => { fetchSubjects(); }, []);
 
   const fetchSubjects = async () => {
     try {
-      const { data } = await axios.get('http://127.0.0.1:5000/api/admin/subjects', config);
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const { data } = await axios.get('/api/admin/subjects', {
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
       setSubjects(data);
     } catch (err) {
       console.error('Error fetching subjects:', err);
@@ -27,23 +30,32 @@ const SubjectManagement = () => {
 
   const groupedSubjects = useMemo(() => {
     const groups = {};
-    const filtered = activeSemester === 'All' 
-      ? subjects 
-      : subjects.filter(s => s.semester === parseInt(activeSemester));
+    let filtered = subjects;
+    
+    if (activeSemester !== 'All') {
+      filtered = filtered.filter(s => s.semester === parseInt(activeSemester));
+    }
+    
+    if (selectedDepartment !== 'All') {
+      filtered = filtered.filter(s => s.department === selectedDepartment);
+    }
     
     filtered.forEach(sub => {
       if (!groups[sub.semester]) groups[sub.semester] = [];
       groups[sub.semester].push(sub);
     });
     return groups;
-  }, [subjects, activeSemester]);
+  }, [subjects, activeSemester, selectedDepartment]);
 
   const semesters = ['All', '1', '2', '3', '4', '5', '6', '7', '8'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://127.0.0.1:5000/api/admin/subjects', formData, config);
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      await axios.post('/api/admin/subjects', formData, {
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
       setIsModalOpen(false);
       setFormData({ subjectName: '', subjectCode: '', semester: 1, department: 'Computer Science', credits: 3 });
       fetchSubjects();
@@ -55,7 +67,10 @@ const SubjectManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this subject?')) {
       try {
-        await axios.delete(`http://127.0.0.1:5000/api/admin/subjects/${id}`, config);
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        await axios.delete(`/api/admin/subjects/${id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` }
+        });
         fetchSubjects();
       } catch (err) {
         alert('Error deleting subject');
@@ -82,21 +97,36 @@ const SubjectManagement = () => {
           </button>
         </div>
 
-        {/* Semester Filter */}
-        <div className="flex flex-wrap gap-2 mb-10 p-1 bg-slate-100 rounded-2xl w-fit">
-          {semesters.map((sem) => (
-            <button
-              key={sem}
-              onClick={() => setActiveSemester(sem)}
-              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
-                activeSemester === sem
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              {sem === 'All' ? 'All Semesters' : `Sem ${sem}`}
-            </button>
-          ))}
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-6 mb-10">
+          <div className="flex flex-wrap gap-2 p-1 bg-slate-100 rounded-2xl w-fit">
+            {semesters.map((sem) => (
+              <button
+                key={sem}
+                onClick={() => setActiveSemester(sem)}
+                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+                  activeSemester === sem
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                {sem === 'All' ? 'All Semesters' : `Sem ${sem}`}
+              </button>
+            ))}
+          </div>
+
+          <div className="h-10 w-px bg-slate-100 hidden md:block"></div>
+
+          <select 
+            className="p-3 border rounded-xl bg-slate-50 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]"
+            value={selectedDepartment}
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+          >
+            <option value="All">All Departments</option>
+            {departmentsList.map(dept => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
         </div>
 
         <div className="space-y-12">
@@ -197,7 +227,16 @@ const SubjectManagement = () => {
               </div>
               <div className="space-y-1">
                 <label className="text-sm font-bold text-slate-600 ml-1">Department</label>
-                <input type="text" placeholder="e.g. CS" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} />
+                <select 
+                  required 
+                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none" 
+                  value={formData.department} 
+                  onChange={(e) => setFormData({...formData, department: e.target.value})}
+                >
+                  {departmentsList.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
               </div>
               <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition mt-4">
                 Create Subject

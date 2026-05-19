@@ -14,14 +14,14 @@ const Announcements = () => {
   useEffect(() => { fetchAnnouncements(); }, []);
 
   const fetchAnnouncements = async () => {
-    const { data } = await axios.get('http://127.0.0.1:5000/api/admin/announcements', config);
+    const { data } = await axios.get('/api/admin/announcements', config);
     setAnnouncements(data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://127.0.0.1:5000/api/admin/announcements', formData, config);
+      await axios.post('/api/admin/announcements', formData, config);
       setIsModalOpen(false);
       setFormData({ title: '', message: '', targetAudience: 'all' });
       fetchAnnouncements();
@@ -32,7 +32,7 @@ const Announcements = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm('Delete this announcement?')) {
-      await axios.delete(`http://127.0.0.1:5000/api/admin/announcements/${id}`, config);
+      await axios.delete(`/api/admin/announcements/${id}`, config);
       fetchAnnouncements();
     }
   };

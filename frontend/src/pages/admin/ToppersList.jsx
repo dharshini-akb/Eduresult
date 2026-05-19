@@ -8,7 +8,7 @@ const ToppersList = () => {
   useEffect(() => {
     const fetchToppers = async () => {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://127.0.0.1:5000/api/admin/toppers', {
+      const { data } = await axios.get('/api/admin/toppers', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setToppers(data);
@@ -46,7 +46,7 @@ const ToppersList = () => {
                 <FiStar />
                 <span>{topper.avgGPA.toFixed(2)}</span>
               </div>
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Average GPA</p>
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">CGPA</p>
             </div>
           </div>
         ))}

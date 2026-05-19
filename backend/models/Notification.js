@@ -21,8 +21,12 @@ const notificationSchema = mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['announcement', 'result', 'system'],
+      enum: ['announcement', 'result', 'system', 'marks'],
       default: 'announcement',
+    },
+    meta: {
+      subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject' },
+      semester: Number,
     },
   },
   {
