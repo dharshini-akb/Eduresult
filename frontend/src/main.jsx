@@ -6,7 +6,7 @@ import App from './App.jsx'
 
 // Configure axios base URL for production
 if (import.meta.env.PROD) {
-  axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://your-backend-url.onrender.com';
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://eduresult-3usb.onrender.com';
 }
 
 createRoot(document.getElementById('root')).render(
