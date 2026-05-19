@@ -52,9 +52,14 @@ export const getStandingLabel = (cgpa) => {
 };
 
 export const getProfileImageUrl = (path, name = 'Student') => {
-  if (path && path.startsWith('/uploads') && !path.includes('default-profile')) return path;
+  if (path && path.startsWith('/uploads') && !path.includes('default-profile')) {
+    const baseUrl = import.meta.env.PROD 
+      ? (import.meta.env.VITE_API_URL || 'https://eduresult-3usb.onrender.com')
+      : '';
+    return `${baseUrl}${path}`;
+  }
   if (path && path.startsWith('http')) return path;
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f97316&color=fff&size=256`;
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff&size=256`;
 };
 
 export const loadImageAsDataUrl = (url) =>
