@@ -72,6 +72,9 @@ const LandingPage = () => {
               <Link to="/login" className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-lg transition shadow-xl shadow-blue-600/25 flex items-center gap-3 group">
                 Open portal <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
               </Link>
+              <button className={`px-8 py-4 rounded-2xl font-black text-lg transition border ${isDarkMode ? 'bg-black hover:bg-blue-950 text-blue-500 border-blue-600/50' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}`}>
+                Learn more
+              </button>
             </div>
 
             <div className={`grid grid-cols-3 gap-8 mt-16 pt-16 border-t ${isDarkMode ? 'border-blue-900/30' : 'border-slate-200'}`}>
