@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { getProfileImageUrl } from '../utils/gpa';
 import {
-  FiBook, FiLogOut, FiBell, FiRefreshCw, FiClock, FiSun, FiMoon, FiAward
+  FiBook, FiLogOut, FiBell, FiRefreshCw, FiClock, FiSun, FiMoon, FiAward, FiMenu, FiX
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 

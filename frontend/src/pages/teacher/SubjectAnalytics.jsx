@@ -82,8 +82,8 @@ const SubjectAnalytics = ({ portalType }) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
               <h4 className="text-lg font-bold text-gray-800 mb-8">Pass vs Fail Distribution</h4>
-              <div className="w-full" style={{ minWidth: 0 }}>
-                <ResponsiveContainer width="100%" height={256}>
+              <div className="w-full h-[256px] relative" style={{ minWidth: 0 }}>
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={[

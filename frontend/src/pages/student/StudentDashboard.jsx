@@ -12,6 +12,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import StudentPortalLayout from '../../components/student/StudentPortalLayout';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import {
   GRADE_OPTIONS, calculateCGPA, getGradePoint, getCredits,
   getProfileImageUrl, loadImageAsDataUrl, getStandingLabel
@@ -54,6 +55,7 @@ const letterFromGpa = (gpa) => {
 
 const StudentDashboard = () => {
   const { updateUser } = useAuth();
+  const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
@@ -273,7 +275,6 @@ const StudentDashboard = () => {
   }
 
   const renderDashboard = () => {
-    const isDarkMode = false; // Placeholder for dark mode check
     return (
       <div className="space-y-6 pb-8">
         {hasNewResults && (
@@ -309,11 +310,11 @@ const StudentDashboard = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm">
-            <h3 className="font-bold text-slate-800 dark:text-white mb-4">Semester Performance</h3>
-            <div style={{ width: '100%', height: '250px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={semChartData}>
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm overflow-hidden">
+          <h3 className="font-bold text-slate-800 dark:text-white mb-4">Semester Performance</h3>
+          <div className="w-full h-[250px] sm:h-[300px] relative" style={{ minWidth: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={semChartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#1e293b' : '#e2e8f0'} />
                   <XAxis dataKey="sem" tick={{ fontSize: 10, fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
                   <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
