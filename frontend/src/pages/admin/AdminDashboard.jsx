@@ -11,6 +11,7 @@ import {
   Tooltip, ResponsiveContainer, Cell 
 } from 'recharts';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../context/ThemeContext';
 
 // Sub-components
 import StudentManagement from './StudentManagement';
