@@ -80,18 +80,18 @@ const SubjectManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <FiBookOpen className="text-blue-600" />
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+              <FiBookOpen className="text-blue-600 dark:text-blue-400" />
               Curriculum Management
             </h3>
-            <p className="text-slate-500">View and manage subjects by academic semester</p>
+            <p className="text-slate-500 dark:text-slate-400">View and manage subjects by academic semester</p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition shadow-lg shadow-blue-200"
+            className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition shadow-lg shadow-blue-600/20"
           >
             <FiPlus /> <span className="font-semibold">Add New Subject</span>
           </button>
@@ -99,15 +99,15 @@ const SubjectManagement = () => {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-6 mb-10">
-          <div className="flex flex-wrap gap-2 p-1 bg-slate-100 rounded-2xl w-fit">
+          <div className="flex flex-wrap gap-2 p-1 bg-slate-100 dark:bg-slate-950 rounded-2xl w-fit">
             {semesters.map((sem) => (
               <button
                 key={sem}
                 onClick={() => setActiveSemester(sem)}
                 className={`px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
                   activeSemester === sem
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
                 {sem === 'All' ? 'All Semesters' : `Sem ${sem}`}
@@ -115,10 +115,10 @@ const SubjectManagement = () => {
             ))}
           </div>
 
-          <div className="h-10 w-px bg-slate-100 hidden md:block"></div>
+          <div className="h-10 w-px bg-slate-100 dark:bg-slate-800 hidden md:block"></div>
 
           <select 
-            className="p-3 border rounded-xl bg-slate-50 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]"
+            className="p-3 border rounded-xl bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]"
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
           >
@@ -148,25 +148,25 @@ const SubjectManagement = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       key={subject._id} 
-                      className="p-6 rounded-3xl border border-slate-100 bg-white hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 group relative overflow-hidden"
+                      className="p-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-xl hover:shadow-blue-50/50 dark:hover:shadow-blue-900/10 transition-all duration-300 group relative overflow-hidden"
                     >
                       <div className="absolute top-0 right-0 p-4">
                         <button
                           onClick={() => handleDelete(subject._id)}
-                          className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 opacity-0 group-hover:opacity-100"
+                          className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all duration-300 opacity-0 group-hover:opacity-100"
                         >
                           <FiTrash2 size={18} />
                         </button>
                       </div>
                       
-                      <h4 className="font-bold text-lg text-gray-800 mb-1 group-hover:text-blue-600 transition-colors pr-8">
+                      <h4 className="font-bold text-lg text-gray-800 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors pr-8">
                         {subject.subjectName}
                       </h4>
                       <p className="text-sm text-slate-400 font-mono mb-4 uppercase tracking-wider">
                         {subject.subjectCode} • {subject.credits} Credits
                       </p>
                       
-                      <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-500">
+                      <div className="pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-slate-500">
                         <span className="flex items-center gap-1">
                           <div className="w-2 h-2 rounded-full bg-blue-400"></div>
                           {subject.department}
@@ -193,43 +193,43 @@ const SubjectManagement = () => {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl"
+            className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-800"
           >
             <div className="flex justify-between items-center mb-8">
-              <h4 className="text-2xl font-bold text-slate-800">Add New Subject</h4>
+              <h4 className="text-2xl font-bold text-slate-800 dark:text-white">Add New Subject</h4>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-slate-100 rounded-xl transition"
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
               >
                 <FiX className="text-2xl text-slate-400" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1">
-                <label className="text-sm font-bold text-slate-600 ml-1">Subject Name</label>
-                <input type="text" placeholder="e.g. Data Structures" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.subjectName} onChange={(e) => setFormData({...formData, subjectName: e.target.value})} />
+                <label className="text-sm font-bold text-slate-600 dark:text-slate-400 ml-1">Subject Name</label>
+                <input type="text" placeholder="e.g. Data Structures" required className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition dark:text-white" value={formData.subjectName} onChange={(e) => setFormData({...formData, subjectName: e.target.value})} />
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-bold text-slate-600 ml-1">Subject Code</label>
-                <input type="text" placeholder="e.g. CSE301" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.subjectCode} onChange={(e) => setFormData({...formData, subjectCode: e.target.value})} />
+                <label className="text-sm font-bold text-slate-600 dark:text-slate-400 ml-1">Subject Code</label>
+                <input type="text" placeholder="e.g. CSE301" required className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition dark:text-white" value={formData.subjectCode} onChange={(e) => setFormData({...formData, subjectCode: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-slate-600 ml-1">Semester</label>
-                  <select required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none" value={formData.semester} onChange={(e) => setFormData({...formData, semester: e.target.value})}>
+                  <label className="text-sm font-bold text-slate-600 dark:text-slate-400 ml-1">Semester</label>
+                  <select required className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none dark:text-white" value={formData.semester} onChange={(e) => setFormData({...formData, semester: e.target.value})}>
                     {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>Semester {n}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-slate-600 ml-1">Credits</label>
-                  <input type="number" min="1" max="10" required className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition" value={formData.credits} onChange={(e) => setFormData({...formData, credits: e.target.value})} />
+                  <label className="text-sm font-bold text-slate-600 dark:text-slate-400 ml-1">Credits</label>
+                  <input type="number" min="1" max="10" required className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition dark:text-white" value={formData.credits} onChange={(e) => setFormData({...formData, credits: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-bold text-slate-600 ml-1">Department</label>
+                <label className="text-sm font-bold text-slate-600 dark:text-slate-400 ml-1">Department</label>
                 <select 
                   required 
-                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none" 
+                  className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none dark:text-white" 
                   value={formData.department} 
                   onChange={(e) => setFormData({...formData, department: e.target.value})}
                 >
@@ -238,7 +238,7 @@ const SubjectManagement = () => {
                   ))}
                 </select>
               </div>
-              <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition mt-4">
+              <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition mt-4">
                 Create Subject
               </button>
             </form>

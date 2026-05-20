@@ -208,261 +208,169 @@ const MarkEntry = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {isHead && pendingExternal.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="font-bold text-amber-900 flex items-center gap-2">
-            <FiAlertCircle />
-            {pendingExternal.length} subject(s) awaiting external marks
-          </p>
-          <p className="text-sm text-amber-800 mt-1">
-            Teachers have submitted internal marks. Enter external marks (out of 60) and publish.
-          </p>
-          <ul className="mt-3 space-y-1 text-sm text-amber-900">
-            {pendingExternal.slice(0, 5).map((b) => (
-              <li key={b._id}>
-                · {b.subjectId?.subjectName} — Semester {b.semester} ({b.subjectId?.department})
-              </li>
-            ))}
-          </ul>
+    <div className="space-y-8">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+            <FiBriefcase className="text-blue-600 dark:text-blue-400" />
+            <span>Mark Management</span>
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 font-medium">Enter and manage student examination performance</p>
         </div>
-      )}
-
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-              <FiBookOpen className="text-blue-500" />
-              Mark Entry
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
-              {isHead
-                ? 'Step 2: Enter external marks (out of 60) for students who passed internal, then publish.'
-                : 'Step 1: Enter internal marks (out of 40). Minimum 20 to pass internal. Then submit to Head.'}
-            </p>
-            {isTeacher && teacherDept && (
-              <p className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-white bg-blue-600 px-3 py-2 rounded-xl">
-                <FiBriefcase /> {teacherDept}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2 p-1 bg-slate-100 dark:bg-slate-950 rounded-2xl w-fit mb-6">
-          {semesters.map((sem) => (
+        <div className="flex flex-wrap gap-2">
+          {semesters.map(s => (
             <button
-              key={sem}
-              type="button"
-              onClick={() => setActiveSemester(sem)}
-              className={`px-5 py-2 rounded-xl text-sm font-bold transition ${
-                activeSemester === sem ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500'
+              key={s}
+              onClick={() => setActiveSemester(s)}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition ${
+                activeSemester === s 
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
-              {sem === 'All' ? 'All Semesters' : `Semester ${sem}`}
+              {s === 'All' ? 'All Semesters' : `Sem ${s}`}
             </button>
           ))}
         </div>
+      </div>
 
-        {!selectedSubject ? (
-          <div className="space-y-8">
-            {Object.keys(groupedBySemester).length === 0 ? (
-              <div className="text-center py-16 text-slate-500">No subjects found.</div>
-            ) : (
-              Object.keys(groupedBySemester)
-                .sort((a, b) => a - b)
-                .map((sem) => (
-                  <div key={sem}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="px-3 py-1 bg-blue-600 text-white rounded-lg font-bold text-sm">
-                        Semester {sem}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="lg:col-span-1 space-y-6">
+          {Object.keys(groupedBySemester).sort().map(sem => (
+            <div key={sem} className="space-y-3">
+              <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-2">Semester {sem}</h4>
+              <div className="grid gap-3">
+                {groupedBySemester[sem].map(sub => (
+                  <button
+                    key={sub._id}
+                    onClick={() => selectSubject(sub)}
+                    className={`p-5 rounded-2xl border-2 text-left transition relative group overflow-hidden ${
+                      selectedSubject === sub._id 
+                        ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-900/10' 
+                        : 'border-transparent bg-white dark:bg-slate-900 hover:border-slate-200 dark:hover:border-slate-700 shadow-sm'
+                    }`}
+                  >
+                    {sub.awaitingExternal && (
+                      <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500 text-white text-[10px] font-black uppercase tracking-tighter rounded-bl-xl shadow-lg animate-pulse">
+                        Pending External
+                      </div>
+                    )}
+                    <h5 className={`font-black text-base ${selectedSubject === sub._id ? 'text-blue-700 dark:text-blue-400' : 'text-slate-800 dark:text-white'}`}>
+                      {sub.subjectName}
+                    </h5>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-bold mt-1 uppercase tracking-tight">{sub.subjectCode}</p>
+                    <div className="flex items-center gap-3 mt-4">
+                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${sub.markStatus?.published ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                        {sub.markStatus?.published ? 'Published' : 'Draft'}
                       </span>
-                      <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {groupedBySemester[sem].map((sub) => (
-                        <button
-                          key={sub._id}
-                          type="button"
-                          onClick={() => selectSubject(sub)}
-                          className={`text-left p-5 rounded-2xl border transition group ${
-                            sub.awaitingExternal
-                              ? 'border-amber-300 bg-amber-50 dark:bg-amber-900/10 hover:shadow-lg'
-                              : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-300 dark:hover:border-blue-700'
-                          }`}
-                        >
-                          <h4 className="font-bold text-slate-800 dark:text-white">{sub.subjectName}</h4>
-                          <p className="text-xs text-slate-400 font-mono mt-1">{sub.subjectCode}</p>
-                          {sub.markStatus?.internalSubmitted && !sub.markStatus?.published && (
-                            <span className="inline-block mt-2 text-[10px] font-bold uppercase bg-amber-200 dark:bg-amber-900/30 text-amber-900 dark:text-amber-400 px-2 py-0.5 rounded">
-                              Awaiting external
-                            </span>
-                          )}
-                          {sub.markStatus?.published && (
-                            <span className="inline-block mt-2 text-[10px] font-bold uppercase bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-2 py-0.5 rounded">
-                              Published
-                            </span>
-                          )}
-                          {isTeacher && sub.markStatus?.internalSubmitted && (
-                            <span className="inline-block mt-2 text-[10px] font-bold uppercase bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 px-2 py-0.5 rounded">
-                              Sent to Head
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))
-            )}
-          </div>
-        ) : (
-          <div>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedSubject('');
-                setStudents([]);
-                setBatchStatus(null);
-              }}
-              className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline mb-4"
-            >
-              ← Back to subjects
-            </button>
-
-            <div className="p-4 rounded-xl mb-4 border flex flex-wrap justify-between gap-3 items-center bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
-              <div>
-                <p className="font-bold text-slate-800 dark:text-white">{selectedSub?.subjectName}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Semester {selectedSub?.semester} · {selectedSub?.department}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {isTeacher && (
-                  <button
-                    type="button"
-                    disabled={!canSubmitInternal || submitting}
-                    onClick={submitInternalToHead}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold disabled:opacity-50"
-                  >
-                    <FiSend /> {submitting ? 'Submitting…' : 'Submit internal to Head'}
                   </button>
-                )}
-                {isHead && (
-                  <button
-                    type="button"
-                    disabled={!canPublish}
-                    onClick={publishResults}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-bold disabled:opacity-50"
-                  >
-                    <FiCheckCircle /> Publish results
-                  </button>
-                )}
+                ))}
               </div>
             </div>
+          ))}
+          {filteredSubjects.length === 0 && (
+            <div className="p-12 text-center bg-slate-50 dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+              <FiBookOpen className="text-4xl text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+              <p className="text-slate-400 font-bold">No subjects assigned.</p>
+            </div>
+          )}
+        </div>
 
-            {internalLocked && isTeacher && (
-              <p className="text-sm text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 rounded-xl p-3 mb-4">
-                Internal marks submitted. Head will enter external marks and publish results.
-              </p>
-            )}
-            {isHead && !published && (
-              <p className="text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/20 rounded-xl p-3 mb-4">
-                Enter external marks below for students who passed internal. Once all marks are entered, click Publish.
-              </p>
-            )}
-            {published && (
-              <p className="text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/20 rounded-xl p-3 mb-4">
-                Results published. Students can view when all semester subjects are published.
-              </p>
-            )}
+        <div className="lg:col-span-2">
+          {loading ? (
+            <div className="h-64 flex items-center justify-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
+              <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : selectedSubject ? (
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden">
+              <div className="p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                  <div>
+                    <h4 className="text-2xl font-black text-slate-800 dark:text-white">{selectedSub?.subjectName}</h4>
+                    <div className="flex flex-wrap gap-4 mt-2">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tight">{selectedSub?.subjectCode}</p>
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-2 hidden sm:block"></span>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 font-bold">Semester {selectedSub?.semester}</p>
+                    </div>
+                  </div>
+                  {isTeacher && !internalLocked && (
+                    <button
+                      onClick={submitInternalToHead}
+                      disabled={!canSubmitInternal || submitting}
+                      className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black transition shadow-lg ${
+                        canSubmitInternal 
+                          ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20' 
+                          : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <FiSend /> {submitting ? 'Submitting...' : 'Submit to Head'}
+                    </button>
+                  )}
+                  {isHead && !published && (
+                    <button
+                      onClick={publishResults}
+                      disabled={!canPublish}
+                      className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black transition shadow-lg ${
+                        canPublish 
+                          ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-600/20' 
+                          : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <FiCheckCircle /> Publish Final Results
+                    </button>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Students</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-white">{studentCount}</p>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                    <p className="text-xl font-black text-blue-600 dark:text-blue-400">
+                      {published ? 'Finalized' : internalLocked ? 'Awaiting Head' : 'Draft'}
+                    </p>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mode</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-white">{isHead ? 'External' : 'Internal'}</p>
+                  </div>
+                </div>
+              </div>
 
-            {loading ? (
-              <div className="text-center py-12 text-slate-500">Loading students…</div>
-            ) : (
-              <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 dark:bg-slate-950 text-xs uppercase text-slate-500 dark:text-slate-400">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
                     <tr>
-                      <th className="px-6 py-4">Student</th>
-                      <th className="px-6 py-4 text-center">Internal (40)</th>
-                      <th className="px-6 py-4 text-center">Internal result</th>
-                      <th className="px-6 py-4 text-center">External (60)</th>
-                      <th className="px-6 py-4 text-center">Total</th>
-                      <th className="px-6 py-4 text-center">Final</th>
+                      <th className="px-8 py-5">Register No</th>
+                      <th className="px-8 py-5">Student Name</th>
+                      <th className="px-8 py-5 text-center">{isHead ? 'External (60)' : 'Internal (40)'}</th>
+                      <th className="px-8 py-5 text-center">Current Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                     {students.map((student) => (
-                      <tr key={student._id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                        <td className="px-6 py-4">
-                          <p className="font-bold text-slate-800 dark:text-white">{student.name}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{student.registerNumber}</p>
+                      <tr key={student._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                        <td className="px-8 py-5 font-bold text-slate-700 dark:text-slate-300">{student.registerNumber}</td>
+                        <td className="px-8 py-5 font-bold text-slate-800 dark:text-white">{student.name}</td>
+                        <td className="px-8 py-5 text-center">
+                          <input
+                            type="number"
+                            min="0"
+                            max={isHead ? 60 : 40}
+                            disabled={published || (isTeacher && internalLocked)}
+                            defaultValue={isHead ? student.marks?.external : student.marks?.internal}
+                            onBlur={(e) => handleMarkUpdate(student._id, e.target.value)}
+                            className="w-20 p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-center font-black text-blue-600 dark:text-blue-400 outline-none focus:ring-2 focus:ring-blue-500/20 disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 transition"
+                          />
                         </td>
-                        <td className="px-6 py-4 text-center">
-                          {isTeacher && !internalLocked ? (
-                            <input
-                              type="number"
-                              max="40"
-                              className="w-20 p-2 border dark:border-slate-700 rounded-lg text-center bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
-                              defaultValue={student.marks?.internal ?? ''}
-                              onBlur={(e) => handleMarkUpdate(student._id, e.target.value)}
-                            />
-                          ) : (
-                            <span className="font-semibold text-slate-800 dark:text-white">{student.marks?.internal ?? '—'}</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <span
-                            className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                              student.marks?.internalStatus === 'Pass'
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                                : student.marks?.internal != null
-                                  ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
-                            }`}
-                          >
-                            {student.marks?.internalStatus ||
-                              (student.marks?.internal != null
-                                ? student.marks.internal >= 20
-                                  ? 'Pass'
-                                  : 'Fail'
-                                : '—')}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          {isHead &&
-                          !published &&
-                          student.marks?.internalStatus !== 'Fail' &&
-                          (student.marks?.internal ?? 0) >= 20 ? (
-                            <input
-                              key={`ext-${student._id}-${selectedSubject}`}
-                              type="number"
-                              min="0"
-                              max="60"
-                              className="w-20 p-2 border dark:border-slate-700 rounded-lg text-center focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
-                              defaultValue={student.marks?.external ?? ''}
-                              onBlur={(e) => handleMarkUpdate(student._id, e.target.value)}
-                            />
-                          ) : (
-                            <span className="font-semibold text-slate-500 dark:text-slate-400">
-                              {student.marks?.internalStatus === 'Fail' ||
-                              (student.marks?.internal != null && student.marks.internal < 20)
-                                ? 'N/A'
-                                : student.marks?.external ?? '—'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-center font-bold text-blue-600 dark:text-blue-400">
-                          {(student.marks?.internal || 0) + (student.marks?.external || 0)}
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <span
-                            className={`text-[10px] font-bold uppercase px-2 py-1 rounded ${
-                              student.marks?.published
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                            }`}
-                          >
-                            {student.marks?.published ? 'Published' : student.marks?.status || 'Pending'}
+                        <td className="px-8 py-5 text-center">
+                          <span className={`px-4 py-1.5 rounded-lg font-black text-sm ${
+                            student.marks?.internalStatus === 'Fail' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                          }`}>
+                            {student.marks?.internalStatus === 'Fail' ? 'Internal Fail' : ((student.marks?.internal || 0) + (student.marks?.external || 0))}
                           </span>
                         </td>
                       </tr>
@@ -470,9 +378,17 @@ const MarkEntry = () => {
                   </tbody>
                 </table>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="h-96 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-[2.5rem] border-2 border-dashed border-slate-100 dark:border-slate-800 shadow-sm p-12 text-center">
+              <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6">
+                <FiInfo className="text-4xl text-blue-600 dark:text-blue-400" />
+              </div>
+              <h4 className="text-2xl font-black text-slate-800 dark:text-white">Select a Subject</h4>
+              <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-sm font-medium">Click on any subject card on the left to start entering examination marks.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

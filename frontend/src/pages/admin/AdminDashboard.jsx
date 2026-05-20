@@ -67,15 +67,15 @@ const Overview = () => {
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4"
+          className="mb-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/20 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4"
         >
           <div className="flex items-center space-x-3 text-center sm:text-left">
-            <div className="p-2 bg-amber-100 rounded-lg text-amber-600 shrink-0">
+            <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600 dark:text-amber-400 shrink-0">
               <FiBell className="text-xl" />
             </div>
             <div>
-              <p className="text-amber-900 font-bold">Action Required: Pending Marks</p>
-              <p className="text-amber-700 text-sm">Teachers have entered internal marks for {stats.pendingExternal} students. Please update their external marks.</p>
+              <p className="text-amber-900 dark:text-amber-100 font-bold">Action Required: Pending Marks</p>
+              <p className="text-amber-700 dark:text-amber-300 text-sm">Teachers have entered internal marks for {stats.pendingExternal} students. Please update their external marks.</p>
             </div>
           </div>
           <Link 
@@ -95,16 +95,23 @@ const Overview = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <h3 className="text-lg font-bold text-gray-800 mb-6">Performance Overview</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-6">Performance Overview</h3>
           <div className="w-full h-[250px] relative" style={{ minWidth: 0 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#1e293b' : '#e2e8f0'} />
+                <XAxis dataKey="name" tick={{ fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
+                <YAxis tick={{ fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ 
+                    backgroundColor: isDarkMode ? '#0f172a' : '#fff',
+                    borderColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+                    borderRadius: '12px', 
+                    border: 'none', 
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
+                  }}
+                  itemStyle={{ color: isDarkMode ? '#f8fafc' : '#1e293b' }}
                 />
                 <Bar dataKey="value" radius={[10, 10, 0, 0]}>
                   {chartData.map((entry, index) => (
@@ -116,9 +123,9 @@ const Overview = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-gray-800">Quick Navigation</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white">Quick Navigation</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <QuickLink to="/admin/teachers" icon={<FiPlus />} label="Manage Teachers" color="blue" />
@@ -135,6 +142,7 @@ const Overview = () => {
 const AdminDashboard = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
 
   return (
     <DashboardLayout 
@@ -143,7 +151,7 @@ const AdminDashboard = () => {
       onSwitchPortal={user.role === 'head' ? () => navigate('/teacher') : null}
     >
       <Routes>
-        <Route index element={<Overview />} />
+        <Route index element={<Overview isDarkMode={isDarkMode} />} />
         <Route path="students" element={<StudentManagement />} />
         <Route path="teachers" element={<TeacherManagement />} />
         <Route path="subjects" element={<SubjectManagement />} />
@@ -156,21 +164,21 @@ const AdminDashboard = () => {
 };
 
 const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+  <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center space-x-4">
     <div className={`p-4 rounded-xl ${color} text-white text-2xl shadow-lg`}>
       {icon}
     </div>
     <div>
-      <p className="text-sm text-gray-500 font-medium">{title}</p>
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <p className="text-sm text-gray-500 dark:text-slate-400 font-medium">{title}</p>
+      <p className="text-2xl font-bold text-gray-800 dark:text-white">{value}</p>
     </div>
   </div>
 );
 
 const QuickLink = ({ to, icon, label, color }) => (
-  <Link to={to} className={`flex items-center space-x-3 p-4 rounded-xl border-2 border-transparent hover:border-${color}-500 hover:bg-${color}-50 transition duration-300 group`}>
-    <span className={`text-${color}-600 text-xl transform group-hover:scale-110 transition duration-300`}>{icon}</span>
-    <span className="font-semibold text-gray-700">{label}</span>
+  <Link to={to} className={`flex items-center space-x-3 p-4 rounded-xl border-2 border-transparent hover:border-${color}-500 hover:bg-${color}-50 dark:hover:bg-${color}-900/10 transition duration-300 group`}>
+    <span className={`text-${color}-600 dark:text-${color}-400 text-xl transform group-hover:scale-110 transition duration-300`}>{icon}</span>
+    <span className="font-semibold text-gray-700 dark:text-slate-200">{label}</span>
   </Link>
 );
 
