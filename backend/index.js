@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -16,22 +17,7 @@ dotenv.config();
 
 connectDB();
 
-const { register, metricsMiddleware } = require('./middleware/metricsMiddleware');
-
 const app = express();
-
-// Prometheus Metrics Middleware
-app.use(metricsMiddleware);
-
-// Metrics endpoint
-app.get('/metrics', async (req, res) => {
-  try {
-    res.set('Content-Type', register.contentType);
-    res.end(await register.metrics());
-  } catch (ex) {
-    res.status(500).end(ex);
-  }
-});
 
 const uploadsPath = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsPath)) {
