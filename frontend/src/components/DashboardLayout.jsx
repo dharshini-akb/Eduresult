@@ -16,6 +16,7 @@ const DashboardLayout = ({ children, menuItems, portalType, onSwitchPortal }) =>
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const notificationRef = useRef(null);
 
   useEffect(() => {
@@ -85,10 +86,10 @@ const DashboardLayout = ({ children, menuItems, portalType, onSwitchPortal }) =>
       (i) => (i.path && location.pathname === i.path) || i.className?.includes('bg-blue-600')
     )?.label || 'Dashboard';
 
-  return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-200">
-      <aside className="w-72 bg-slate-900 text-white hidden md:flex flex-col shrink-0 border-r border-slate-800">
-        <div className="p-6 flex items-center gap-3 border-b border-slate-800">
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-slate-900 text-white">
+      <div className="p-6 flex items-center justify-between border-b border-slate-800">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
             <FiAward className="text-xl" />
           </div>
@@ -99,62 +100,99 @@ const DashboardLayout = ({ children, menuItems, portalType, onSwitchPortal }) =>
             )}
           </div>
         </div>
+        <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 rounded-lg hover:bg-white/10">
+          <FiX className="text-xl" />
+        </button>
+      </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {menuItems.map((item) => {
-            const isActive = item.path
-              ? location.pathname === item.path
-              : item.className?.includes('bg-blue-600');
-            const classes = `w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${
-              isActive
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                : 'text-slate-400 hover:bg-white/5 hover:text-white'
-            }`;
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        {menuItems.map((item) => {
+          const isActive = item.path
+            ? location.pathname === item.path
+            : item.className?.includes('bg-blue-600');
+          const classes = `w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${
+            isActive
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+              : 'text-slate-400 hover:bg-white/5 hover:text-white'
+          }`;
 
-            if (item.onClick) {
-              return (
-                <button key={item.id || item.label} onClick={item.onClick} className={classes}>
-                  {item.icon}
-                  {item.label}
-                </button>
-              );
-            }
+          if (item.onClick) {
             return (
-              <Link key={item.path} to={item.path} className={classes}>
-                <span className="text-xl">{item.icon}</span>
+              <button key={item.id || item.label} onClick={() => { item.onClick(); setSidebarOpen(false); }} className={classes}>
+                {item.icon}
                 {item.label}
-              </Link>
+              </button>
             );
-          })}
-        </nav>
+          }
+          return (
+            <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)} className={classes}>
+              <span className="text-xl">{item.icon}</span>
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-4 border-t border-slate-800 space-y-1"
-        >
-          {onSwitchPortal && (
-            <button
-              onClick={onSwitchPortal}
-              className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
-            >
-              <FiRefreshCw /> Switch portal
-            </button>
-          )}
+      <div className="p-4 border-t border-slate-800 space-y-1">
+        {onSwitchPortal && (
           <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all"
+            onClick={() => { onSwitchPortal(); setSidebarOpen(false); }}
+            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
           >
-            <FiLogOut className="text-xl" /> Logout
+            <FiRefreshCw /> Switch portal
           </button>
-        </motion.div>
+        )}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all"
+        >
+          <FiLogOut className="text-xl" /> Logout
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-200">
+      <aside className="w-72 bg-slate-900 text-white hidden md:flex flex-col shrink-0 border-r border-slate-800">
+        <SidebarContent />
       </aside>
 
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSidebarOpen(false)}
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] md:hidden"
+            />
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              className="fixed left-0 top-0 bottom-0 w-72 bg-slate-900 z-[70] flex flex-col shadow-2xl md:hidden"
+            >
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 sticky top-0 z-40 transition-colors duration-200">
-          <h2 className="text-xl font-black text-slate-800 dark:text-white capitalize">{activeLabel}</h2>
+        <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 shrink-0 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 sticky top-0 z-40 transition-colors duration-200">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+            >
+              <FiMenu className="text-xl" />
+            </button>
+            <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-white capitalize truncate max-w-[150px] sm:max-w-none">{activeLabel}</h2>
+          </div>
           
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6">
             <button
               onClick={toggleTheme}
               className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"

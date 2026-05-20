@@ -4,18 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import {
   FiAward, FiDownload, FiUsers, FiBarChart2, FiArrowRight, FiCheckCircle, 
-  FiShield, FiZap, FiTarget, FiSun, FiMoon, FiMail, FiMessageSquare, FiX
+  FiShield, FiZap, FiTarget, FiSun, FiMoon, FiMail, FiMessageSquare, FiX, FiMenu
 } from 'react-icons/fi';
 
 const LandingPage = () => {
   const { isDarkMode, toggleTheme } = useTheme();
-  const [showContact, setShowNotifications] = useState(false); // Using for contact modal
+  const [showContact, setShowNotifications] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-black text-blue-500' : 'bg-slate-50 text-slate-900'} selection:bg-blue-600/30`}>
       {/* Navbar */}
       <nav className={`fixed top-0 w-full z-50 backdrop-blur-xl border-b transition-colors ${isDarkMode ? 'bg-black/90 border-blue-900/50' : 'bg-white/90 border-slate-200'}`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -24,57 +25,83 @@ const LandingPage = () => {
             <motion.div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
               <FiAward className="text-xl" />
             </motion.div>
-            <span className={`text-2xl font-black tracking-tight ${isDarkMode ? 'text-blue-500' : 'text-slate-900'}`}>EduResult</span>
+            <span className={`text-xl sm:text-2xl font-black tracking-tight ${isDarkMode ? 'text-blue-500' : 'text-slate-900'}`}>EduResult</span>
           </motion.div>
           
           <div className={`hidden md:flex items-center gap-8 text-sm font-bold ${isDarkMode ? 'text-blue-800' : 'text-slate-500'}`}>
             <a href="#features" className="hover:text-blue-400 transition">Features</a>
-            <a href="#" className="hover:text-blue-400 transition">About</a>
             <button onClick={() => setShowNotifications(true)} className="hover:text-blue-400 transition">Help</button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={toggleTheme}
-              className={`p-2.5 rounded-xl transition-colors ${isDarkMode ? 'bg-slate-900 text-blue-400 hover:bg-slate-800' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              className={`p-2 sm:p-2.5 rounded-xl transition-colors ${isDarkMode ? 'bg-slate-900 text-blue-400 hover:bg-slate-800' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
             >
               {isDarkMode ? <FiSun className="text-xl" /> : <FiMoon className="text-xl" />}
             </button>
-            <Link to="/login" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-sm transition shadow-lg shadow-blue-600/20 flex items-center gap-2">
+            <Link to="/login" className="hidden sm:flex px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-sm transition shadow-lg shadow-blue-600/20 items-center gap-2">
               Sign in <FiArrowRight />
             </Link>
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={`md:hidden p-2 rounded-xl ${isDarkMode ? 'text-blue-400' : 'text-slate-600'}`}
+            >
+              <FiMenu className="text-2xl" />
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className={`md:hidden border-b overflow-hidden ${isDarkMode ? 'bg-black border-blue-900/50' : 'bg-white border-slate-200'}`}
+            >
+              <div className="flex flex-col p-6 gap-4 font-bold">
+                <a href="#features" onClick={() => setMobileMenuOpen(false)} className={isDarkMode ? 'text-blue-400' : 'text-slate-600'}>Features</a>
+                <button onClick={() => { setShowNotifications(true); setMobileMenuOpen(false); }} className={`text-left ${isDarkMode ? 'text-blue-400' : 'text-slate-600'}`}>Help</button>
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="px-6 py-3 bg-blue-600 text-white rounded-xl text-center shadow-lg shadow-blue-600/20">
+                  Sign in
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
-        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none`} />
+      <section className="relative pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
+        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none`} />
         
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="text-center lg:text-left"
           >
-            <span className={`inline-flex items-center px-3 py-1 rounded-full border text-xs font-black uppercase tracking-widest mb-6 ${isDarkMode ? 'bg-blue-600/10 border-blue-600/20 text-blue-500' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full border text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6 ${isDarkMode ? 'bg-blue-600/10 border-blue-600/20 text-blue-500' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
               Result Management Only
             </span>
-            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.2] mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Simple. Secure. <br />
-              Streamlined. <br />
+            <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-black leading-tight sm:leading-[1.2] mb-6 sm:mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Simple. Secure. <br className="hidden sm:block" />
+              Streamlined. <br className="hidden sm:block" />
               <span className="text-blue-600">Results that matter.</span>
             </h1>
-            <p className={`text-lg mb-10 leading-relaxed max-w-lg ${isDarkMode ? 'text-blue-900/80 font-bold' : 'text-slate-600'}`}>
+            <p className={`text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0 ${isDarkMode ? 'text-blue-900/80 font-bold' : 'text-slate-600'}`}>
               Publish marks, track CGPA, and download marksheets — all in one focused portal for colleges.
             </p>
-            <div className="flex flex-wrap gap-5">
-              <Link to="/login" className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-lg transition shadow-xl shadow-blue-600/25 flex items-center gap-3 group">
+            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+              <Link to="/login" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-lg transition shadow-xl shadow-blue-600/25 flex items-center justify-center gap-3 group">
                 Open portal <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className={`grid grid-cols-3 gap-8 mt-16 pt-16 border-t ${isDarkMode ? 'border-blue-900/30' : 'border-slate-200'}`}>
+            <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16 pt-12 sm:pt-16 border-t ${isDarkMode ? 'border-blue-900/30' : 'border-slate-200'}`}>
               <Stat icon={<FiShield />} label="Secure" desc="College data stays protected" isDarkMode={isDarkMode} />
               <Stat icon={<FiTarget />} label="Accurate" desc="Real-time results and CGPA" isDarkMode={isDarkMode} />
               <Stat icon={<FiZap />} label="Instant" desc="Quick marksheet downloads" isDarkMode={isDarkMode} />

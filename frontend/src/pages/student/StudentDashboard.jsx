@@ -266,164 +266,172 @@ const StudentDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f4f6f9]">
-        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  const renderDashboard = () => (
-    <div className="space-y-6">
-      {hasNewResults && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-blue-600 text-white p-4 rounded-2xl flex items-center justify-between shadow-lg shadow-blue-600/20"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <FiAward className="text-xl" />
-            </div>
-            <div>
-              <p className="font-bold">New Results Published!</p>
-              <p className="text-sm text-blue-50">Your academic performance has been updated. Check them now.</p>
-            </div>
-          </div>
-          <button 
-            type="button"
-            onClick={() => setActiveTab('results')}
-            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-bold text-sm hover:bg-blue-50 transition"
+  const renderDashboard = () => {
+    const isDarkMode = false; // Placeholder for dark mode check
+    return (
+      <div className="space-y-6 pb-8">
+        {hasNewResults && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-blue-600 text-white p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-blue-600/20"
           >
-            View Results
-          </button>
-        </motion.div>
-      )}
-
-      <motion.div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <StatCard label="Overall CGPA" value={cgpa} icon={<FiAward />} color="purple" />
-        <StatCard label="Semester SGPA" value={currentSgpa} icon={<FiTrendingUp />} color="orange" />
-        <StatCard label="Total Credits" value={totalCredits} icon={<FiCreditCard />} color="blue" />
-        <StatCard label="Subjects Passed" value={subjectCount} icon={<FiBook />} color="green" />
-      </motion.div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-4">Semester Performance</h3>
-          <div style={{ width: '100%', height: '300px', minHeight: '300px' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={semChartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="sem" tick={{ fontSize: 12 }} />
-                <YAxis domain={[0, 10]} tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="gpa" stroke="#f97316" strokeWidth={3} dot={{ r: 5 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-4">Recent Notifications</h3>
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {notifications.slice(0, 4).map((n) => (
-              <div key={n._id} className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <p className="text-sm font-semibold text-slate-800">{n.title}</p>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.message}</p>
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                <FiAward className="text-xl" />
               </div>
-            ))}
-            {!notifications.length && (
-              <p className="text-sm text-slate-400 text-center py-8">No notifications yet</p>
-            )}
+              <div>
+                <p className="font-bold">New Results Published!</p>
+                <p className="text-sm text-blue-50">Your academic performance has been updated. Check them now.</p>
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={() => setActiveTab('results')}
+              className="w-full sm:w-auto px-4 py-2 bg-white text-blue-600 rounded-lg font-bold text-sm hover:bg-blue-50 transition"
+            >
+              View Results
+            </button>
+          </motion.div>
+        )}
+
+        <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <StatCard label="Overall CGPA" value={cgpa} icon={<FiAward />} color="purple" />
+          <StatCard label="Semester SGPA" value={currentSgpa} icon={<FiTrendingUp />} color="blue" />
+          <StatCard label="Total Credits" value={totalCredits} icon={<FiCreditCard />} color="blue" />
+          <StatCard label="Subjects Passed" value={subjectCount} icon={<FiBook />} color="green" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 dark:text-white mb-4">Semester Performance</h3>
+            <div style={{ width: '100%', height: '250px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={semChartData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#1e293b' : '#e2e8f0'} />
+                  <XAxis dataKey="sem" tick={{ fontSize: 10, fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
+                  <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: isDarkMode ? '#94a3b8' : '#64748b' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: isDarkMode ? '#0f172a' : '#fff',
+                      borderColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+                      borderRadius: '12px'
+                    }}
+                  />
+                  <Line type="monotone" dataKey="gpa" stroke="#2563eb" strokeWidth={3} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+            <h3 className="font-bold text-slate-800 dark:text-white mb-4">Recent Notifications</h3>
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+              {notifications.slice(0, 4).map((n) => (
+                <div key={n._id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                  <p className="text-sm font-semibold text-slate-800 dark:text-white">{n.title}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{n.message}</p>
+                </div>
+              ))}
+              {!notifications.length && (
+                <p className="text-sm text-slate-400 text-center py-8 italic">No notifications yet</p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-gradient-to-r from-violet-600 to-indigo-700 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-white shadow-lg">
-        <div>
-          <h3 className="text-xl font-bold">Download your semester marksheet</h3>
-          <p className="text-violet-100 text-sm mt-1">Available when all semester results are published</p>
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-white shadow-lg shadow-blue-600/20">
+          <div className="text-center sm:text-left">
+            <h3 className="text-lg sm:text-xl font-bold">Download your semester marksheet</h3>
+            <p className="text-blue-100 text-sm mt-1">Available when all semester results are published</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('download');
+            }}
+            className="w-full sm:w-auto px-6 py-3 bg-white text-blue-700 rounded-xl font-bold text-sm hover:bg-blue-50 transition shrink-0"
+          >
+            Download Now
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab('download');
-          }}
-          className="px-6 py-3 bg-white text-violet-700 rounded-xl font-bold text-sm hover:bg-violet-50 shrink-0"
-        >
-          Download Now
-        </button>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderResults = () => {
     if (!results.length) {
       return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 sm:p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 text-slate-300 dark:text-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiAward className="text-3xl" />
           </div>
-          <h3 className="text-lg font-bold text-slate-800">No results published</h3>
-          <p className="text-slate-500 mt-1">Your results will appear here once they are officially published by the department.</p>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white">No results published</h3>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Your results will appear here once they are officially published by the department.</p>
         </div>
       );
     }
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pb-8">
         <div className="flex flex-wrap items-center gap-3">
-        <label className="text-sm font-semibold text-slate-600">Semester</label>
-        <select
-          value={selectedSemester}
-          onChange={(e) => setSelectedSemester(e.target.value)}
-          className="px-4 py-2 rounded-xl border border-slate-200 bg-white font-semibold text-slate-800"
-        >
-          {semesterOptions.map((s) => (
-            <option key={s} value={s}>Semester {s}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4">
-        <StatCard label="Semester GPA (SGPA)" value={currentSgpa} icon={<FiAward />} color="orange" small />
-        <StatCard label="Cumulative GPA (CGPA)" value={cumulativeCgpaAtSelected} icon={<FiAward />} color="purple" small />
-        <StatCard label="Standing" value={getStandingLabel(cumulativeCgpaAtSelected)} icon={<FiStar />} color="green" small />
-      </div>
-
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-            <tr>
-              <th className="px-6 py-4">Subject Code</th>
-              <th className="px-6 py-4">Subject Name</th>
-              <th className="px-6 py-4 text-center">Credits</th>
-              <th className="px-6 py-4 text-center">Grade</th>
-              <th className="px-6 py-4 text-center">Grade Point</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {currentSemResults.filter(r => r.subjectId).map((r) => (
-              <tr key={r._id} className="hover:bg-slate-50">
-                <td className="px-6 py-4 font-mono text-slate-600">{r.subjectId.subjectCode}</td>
-                <td className="px-6 py-4 font-semibold text-slate-800">{r.subjectId.subjectName}</td>
-                <td className="px-6 py-4 text-center">{getCredits(r)}</td>
-                <td className="px-6 py-4 text-center">
-                  <span className="px-3 py-1 bg-orange-50 text-orange-700 rounded-lg font-bold">{r.grade}</span>
-                </td>
-                <td className="px-6 py-4 text-center font-semibold">{getGradePoint(r).toFixed(1)}</td>
-              </tr>
+          <label className="text-sm font-semibold text-slate-600 dark:text-slate-400">Select Semester</label>
+          <select
+            value={selectedSemester}
+            onChange={(e) => setSelectedSemester(e.target.value)}
+            className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20 transition"
+          >
+            {semesterOptions.map((s) => (
+              <option key={s} value={s}>Semester {s}</option>
             ))}
-          </tbody>
-          <tfoot className="bg-slate-50 font-bold text-slate-700">
-            <tr>
-              <td colSpan={2} className="px-6 py-4">Total</td>
-              <td className="px-6 py-4 text-center">
-                {currentSemResults.reduce((s, r) => s + getCredits(r), 0)}
-              </td>
-              <td colSpan={2} className="px-6 py-4 text-center text-orange-600">SGPA {currentSgpa}</td>
-            </tr>
-          </tfoot>
-        </table>
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <StatCard label="Semester SGPA" value={currentSgpa} icon={<FiAward />} color="blue" small />
+          <StatCard label="Cumulative CGPA" value={cumulativeCgpaAtSelected} icon={<FiAward />} color="purple" small />
+          <StatCard label="Standing" value={getStandingLabel(cumulativeCgpaAtSelected)} icon={<FiStar />} color="green" small />
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap sm:whitespace-normal">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 sm:px-6 py-4">Subject Code</th>
+                  <th className="px-4 sm:px-6 py-4">Subject Name</th>
+                  <th className="px-4 sm:px-6 py-4 text-center">Credits</th>
+                  <th className="px-4 sm:px-6 py-4 text-center">Grade</th>
+                  <th className="px-4 sm:px-6 py-4 text-center">GP</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                {currentSemResults.filter(r => r.subjectId).map((r) => (
+                  <tr key={r._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="px-4 sm:px-6 py-4 font-mono text-xs text-slate-600 dark:text-slate-400">{r.subjectId.subjectCode}</td>
+                    <td className="px-4 sm:px-6 py-4 font-bold text-slate-800 dark:text-white">{r.subjectId.subjectName}</td>
+                    <td className="px-4 sm:px-6 py-4 text-center text-slate-600 dark:text-slate-400">{getCredits(r)}</td>
+                    <td className="px-4 sm:px-6 py-4 text-center">
+                      <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg font-black text-xs">{r.grade}</span>
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 text-center font-bold text-slate-800 dark:text-white">{getGradePoint(r).toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="bg-slate-50 dark:bg-slate-800/50 font-black text-slate-700 dark:text-slate-300">
+                <tr>
+                  <td colSpan={2} className="px-4 sm:px-6 py-4">Total Credits: {currentSemResults.reduce((s, r) => s + getCredits(r), 0)}</td>
+                  <td colSpan={3} className="px-4 sm:px-6 py-4 text-right text-blue-600 dark:text-blue-400">SGPA {currentSgpa}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
     );
   };
 
@@ -442,59 +450,64 @@ const StudentDashboard = () => {
     const top3 = toppers.slice(0, 3);
     const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
     return (
-      <div className="space-y-8">
-        <div className="flex justify-center items-end gap-4 min-h-[220px]">
+      <div className="space-y-8 pb-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center sm:items-end gap-6 sm:gap-4 min-h-[220px]">
           {podiumOrder.map((t, i) => {
             const rank = t === top3[0] ? 1 : t === top3[1] ? 2 : 3;
-            const heights = { 1: 'h-36', 2: 'h-28', 3: 'h-24' };
+            const heights = { 1: 'sm:h-36', 2: 'sm:h-28', 3: 'sm:h-24' };
             return (
-              <div key={t._id} className="flex flex-col items-center">
+              <div key={t._id} className={`flex flex-col items-center w-full sm:w-auto ${rank === 1 ? 'order-1 sm:order-2' : rank === 2 ? 'order-2 sm:order-1' : 'order-3'}`}>
                 <img
                   src={getProfileImageUrl(t.user?.profileImage, t.user?.name)}
                   alt=""
                   className={`rounded-full object-cover border-4 ${rank === 1 ? 'w-20 h-20 border-yellow-400' : 'w-16 h-16 border-slate-200'}`}
                 />
-                <p className="font-bold text-slate-800 mt-2 text-sm">{t.user?.name}</p>
-                <p className="text-xs text-slate-500">{t.student?.registerNumber}</p>
-                <p className="text-orange-600 font-extrabold">{t.avgGPA?.toFixed(2)}</p>
-                <div className={`${heights[rank] || 'h-20'} w-24 mt-2 rounded-t-xl ${rank === 1 ? 'bg-yellow-400' : rank === 2 ? 'bg-slate-300' : 'bg-amber-700'} flex items-center justify-center text-white font-black text-xl`}>
+                <p className="font-bold text-slate-800 dark:text-white mt-2 text-sm text-center">{t.user?.name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t.student?.registerNumber}</p>
+                <p className="text-blue-600 dark:text-blue-400 font-black">{t.avgGPA?.toFixed(2)}</p>
+                <div className={`hidden sm:flex ${heights[rank] || 'h-20'} w-24 mt-2 rounded-t-xl ${rank === 1 ? 'bg-yellow-400' : rank === 2 ? 'bg-slate-300' : 'bg-amber-700'} items-center justify-center text-white font-black text-xl`}>
                   #{rank}
+                </div>
+                <div className="sm:hidden mt-2 px-4 py-1 rounded-full bg-blue-600 text-white font-black text-sm">
+                  Rank #{rank}
                 </div>
               </div>
             );
           })}
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-6 py-4">Rank</th>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Roll Number</th>
-                <th className="px-6 py-4">Department</th>
-                <th className="px-6 py-4 text-right">CGPA</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {toppers.map((t, i) => (
-                <tr key={t._id} className={t.student?.registerNumber === profile?.registerNumber ? 'bg-orange-50' : ''}>
-                  <td className="px-6 py-4 font-bold">{i + 1}</td>
-                  <td className="px-6 py-4">{t.user?.name}</td>
-                  <td className="px-6 py-4 font-mono">{t.student?.registerNumber}</td>
-                  <td className="px-6 py-4">{t.student?.department}</td>
-                  <td className="px-6 py-4 text-right font-bold text-orange-600">{t.avgGPA?.toFixed(2)}</td>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm whitespace-nowrap">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase text-slate-500 dark:text-slate-400">
+                <tr>
+                  <th className="px-6 py-4">Rank</th>
+                  <th className="px-6 py-4">Name</th>
+                  <th className="px-6 py-4">Roll Number</th>
+                  <th className="px-6 py-4">Department</th>
+                  <th className="px-6 py-4 text-right">CGPA</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                {toppers.map((t, i) => (
+                  <tr key={t._id} className={t.student?.registerNumber === profile?.registerNumber ? 'bg-blue-50 dark:bg-blue-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/30'}>
+                    <td className="px-6 py-4 font-bold dark:text-white">{i + 1}</td>
+                    <td className="px-6 py-4 font-medium dark:text-white">{t.user?.name}</td>
+                    <td className="px-6 py-4 font-mono text-xs text-slate-500 dark:text-slate-400">{t.student?.registerNumber}</td>
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{t.student?.department}</td>
+                    <td className="px-6 py-4 text-right font-black text-blue-600 dark:text-blue-400">{t.avgGPA?.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
   };
 
   const renderDownload = () => (
-    <div className="space-y-6">
-      <div className="grid sm:grid-cols-2 gap-4">
+    <div className="space-y-6 pb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {semesterOptions.map((sem) => {
           const stats = semesterStatus[sem];
           const isReady = canDownloadSem(sem);
@@ -517,51 +530,53 @@ const StudentDashboard = () => {
   );
 
   const renderNotifications = () => (
-    <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 shadow-sm">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 shadow-sm mb-8">
       {notifications.length ? notifications.map((n) => (
         <div key={n._id} className="p-5">
-          <p className="font-bold text-slate-800">{n.title}</p>
-          <p className="text-sm text-slate-600 mt-1">{n.message}</p>
-          <p className="text-xs text-slate-400 mt-2">{new Date(n.createdAt).toLocaleString()}</p>
+          <p className="font-bold text-slate-800 dark:text-white">{n.title}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{n.message}</p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-2">{new Date(n.createdAt).toLocaleString()}</p>
         </div>
       )) : (
-        <p className="p-12 text-center text-slate-400">No notifications</p>
+        <p className="p-12 text-center text-slate-400 italic">No notifications</p>
       )}
     </div>
   );
 
   const renderProfile = () => (
-    <form onSubmit={saveProfile} className="grid lg:grid-cols-3 gap-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center shadow-sm">
+    <form onSubmit={saveProfile} className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 text-center shadow-sm h-fit">
         <img
           src={photoFile ? URL.createObjectURL(photoFile) : getProfileImageUrl(profile?.userId?.profileImage, profileForm.name)}
           alt=""
-          className="w-28 h-28 rounded-full object-cover mx-auto border-4 border-orange-100"
+          className="w-28 h-28 rounded-full object-cover mx-auto border-4 border-blue-100 dark:border-blue-900/50"
         />
-        <label className="mt-4 inline-block px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-sm font-bold cursor-pointer">
+        <label className="mt-4 inline-block px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl text-sm font-bold cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition">
           Change photo
           <input type="file" accept="image/*" className="hidden" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
         </label>
-        <h3 className="mt-4 text-xl font-bold text-slate-800">{profileForm.name}</h3>
-        <p className="text-slate-500 text-sm">{profile?.registerNumber}</p>
-        <div className="mt-2 flex flex-col items-center gap-1">
-          <p className="text-orange-600 font-extrabold text-lg">CGPA {cgpa}</p>
-          <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+        <h3 className="mt-4 text-xl font-black text-slate-800 dark:text-white">{profileForm.name}</h3>
+        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{profile?.registerNumber}</p>
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <p className="text-blue-600 dark:text-blue-400 font-black text-2xl">CGPA {cgpa}</p>
+          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest">
             {getStandingLabel(cgpa)}
           </span>
         </div>
       </div>
-      <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-        <h3 className="font-bold text-slate-800">Edit profile</h3>
-        <Field label="Full name" icon={<FiUser />} value={profileForm.name} onChange={(v) => setProfileForm((f) => ({ ...f, name: v }))} />
-        <Field label="Email" icon={<FiMail />} type="email" value={profileForm.email} onChange={(v) => setProfileForm((f) => ({ ...f, email: v }))} />
-        <Field label="Phone" icon={<FiPhone />} value={profileForm.phone} onChange={(v) => setProfileForm((f) => ({ ...f, phone: v }))} />
-        <div className="grid sm:grid-cols-2 gap-4 pt-2 text-sm">
+      <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-6">
+        <h3 className="font-bold text-slate-800 dark:text-white text-lg">Edit Personal Information</h3>
+        <div className="space-y-4">
+          <Field label="Full name" icon={<FiUser />} value={profileForm.name} onChange={(v) => setProfileForm((f) => ({ ...f, name: v }))} />
+          <Field label="Email" icon={<FiMail />} type="email" value={profileForm.email} onChange={(v) => setProfileForm((f) => ({ ...f, email: v }))} />
+          <Field label="Phone" icon={<FiPhone />} value={profileForm.phone} onChange={(v) => setProfileForm((f) => ({ ...f, phone: v }))} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
           <Info label="Department" value={profile?.department} icon={<FiBook />} />
           <Info label="Semester" value={`Semester ${profile?.semester}`} icon={<FiHash />} />
         </div>
-        <button type="submit" disabled={savingProfile} className="btn-primary w-full sm:w-auto disabled:opacity-60">
-          {savingProfile ? 'Saving…' : 'Save changes'}
+        <button type="submit" disabled={savingProfile} className="btn-primary w-full sm:w-auto px-10 py-4 disabled:opacity-60 shadow-blue-600/20">
+          {savingProfile ? 'Saving Changes…' : 'Save Changes'}
         </button>
       </div>
     </form>
@@ -590,60 +605,59 @@ const StudentDashboard = () => {
 
 const StatCard = ({ label, value, icon, color, small }) => {
   const colors = {
-    purple: 'from-violet-500 to-purple-600',
-    blue: 'from-blue-500 to-cyan-600',
-    green: 'from-emerald-500 to-green-600',
-    orange: 'from-orange-500 to-amber-600',
+    purple: 'from-violet-500 to-purple-600 shadow-violet-500/20',
+    blue: 'from-blue-500 to-indigo-600 shadow-blue-500/20',
+    green: 'from-emerald-500 to-green-600 shadow-green-500/20',
   };
   return (
-    <div className={`bg-white rounded-2xl border border-slate-200 ${small ? 'p-4' : 'p-5'} shadow-sm flex items-center gap-4`}>
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colors[color]} text-white flex items-center justify-center shrink-0`}>
+    <div className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 ${small ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} shadow-sm flex items-center gap-3 sm:gap-4`}>
+      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${colors[color]} text-white flex items-center justify-center shrink-0 shadow-lg`}>
         {icon}
       </div>
-      <div>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{label}</p>
-        <p className={`font-extrabold text-slate-900 ${small ? 'text-xl' : 'text-2xl'}`}>{value}</p>
+      <div className="min-w-0">
+        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">{label}</p>
+        <p className={`font-black text-slate-900 dark:text-white ${small ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'} truncate`}>{value}</p>
       </div>
     </div>
   );
 };
 
 const DownloadCard = ({ title, subtitle, onDownload, locked, icon }) => (
-  <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col">
-    <motion.div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-4">
-      {icon || <FiDownload />}
+  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col h-full transition-all hover:border-blue-200 dark:hover:border-blue-900/50">
+    <motion.div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
+      {icon || <FiDownload className="text-xl" />}
     </motion.div>
-    <h4 className="font-bold text-slate-800">{title}</h4>
-    <p className="text-sm text-slate-500 mt-1 flex-1">{subtitle}</p>
+    <h4 className="font-bold text-slate-800 dark:text-white">{title}</h4>
+    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex-1 leading-relaxed">{subtitle}</p>
     <button
       type="button"
       disabled={locked}
       onClick={onDownload}
-      className={`mt-4 w-full py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 ${
-        locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600'
+      className={`mt-6 w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-all ${
+        locked ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20'
       }`}
     >
-      {locked && <FiLock />} Download
+      {locked ? <FiLock /> : <FiDownload />} Download
     </button>
   </div>
 );
 
 const Field = ({ label, icon, value, onChange, type = 'text' }) => (
-  <div>
-    <label className="text-xs font-bold text-slate-500 uppercase">{label}</label>
-    <div className="mt-1 flex items-center gap-2 border border-slate-200 rounded-xl px-3 py-2.5">
-      <span className="text-slate-400">{icon}</span>
-      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 outline-none text-slate-800" />
+  <div className="space-y-1.5">
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
+    <div className="flex items-center gap-3 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 rounded-xl px-4 py-3 focus-within:border-blue-500/50 focus-within:bg-white dark:focus-within:bg-slate-900 transition-all">
+      <span className="text-blue-600 dark:text-blue-400">{icon}</span>
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 bg-transparent outline-none text-sm font-bold text-slate-800 dark:text-white" />
     </div>
   </div>
 );
 
 const Info = ({ label, value, icon }) => (
-  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-    <span className="text-orange-500">{icon}</span>
+  <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+    <span className="text-blue-600 dark:text-blue-400 text-lg">{icon}</span>
     <div>
-      <p className="text-xs text-slate-500 font-bold uppercase">{label}</p>
-      <p className="font-semibold text-slate-800">{value}</p>
+      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{label}</p>
+      <p className="font-bold text-slate-800 dark:text-white">{value}</p>
     </div>
   </div>
 );

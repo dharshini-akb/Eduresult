@@ -67,10 +67,10 @@ const Overview = () => {
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between"
+          className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4"
         >
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
+          <div className="flex items-center space-x-3 text-center sm:text-left">
+            <div className="p-2 bg-amber-100 rounded-lg text-amber-600 shrink-0">
               <FiBell className="text-xl" />
             </div>
             <div>
@@ -80,12 +80,7 @@ const Overview = () => {
           </div>
           <Link 
             to="/teacher" 
-            className="px-4 py-2 bg-amber-600 text-white rounded-xl text-sm font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-200"
-            onClick={() => {
-              // This is a bit of a hack since we're in admin portal, 
-              // but the Head role can switch to teacher portal.
-              // In this app, /teacher is the route for mark entry.
-            }}
+            className="w-full sm:w-auto px-4 py-2 bg-amber-600 text-white rounded-xl text-sm font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-200 text-center"
           >
             Go to Head Portal
           </Link>
