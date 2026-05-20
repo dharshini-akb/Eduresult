@@ -31,7 +31,7 @@ const menuItems = [
   { path: '/admin/profile', label: 'Profile', icon: <FiUser /> },
 ];
 
-const Overview = () => {
+const Overview = ({ isDarkMode }) => {
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalTeachers: 0,
